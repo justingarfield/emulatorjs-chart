@@ -27,6 +27,31 @@ env:
   tz: "Europe/London"
   subfolder: "/"
 
+service:
+  managementUI:
+    port: 3000
+    nodePort: 
+  publicUI:
+    port: 80
+    nodePort: 
+  ipfsPeering:
+    port: 4001
+    nodePort: 
+
+  # -- `spec.type` for the Service
+  type: NodePort
+  
+  # -- `spec.externalTrafficPolicy` for the service
+  externalTrafficPolicy: Local
+
+  # -- A fixed `spec.loadBalancerIP` for the service
+  loadBalancerIP: ""
+
+  # -- Annotations for the service
+  annotations: {}
+    # metallb.universe.tf/address-pool: network-services
+    # metallb.universe.tf/allow-shared-ip: emulatorjs-svc
+
 virtualHost: emulatorjs
 
 # -- Configuration for the Ingress

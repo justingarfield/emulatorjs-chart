@@ -1,35 +1,48 @@
 apiVersion: v1
 kind: Service
-
 metadata:
-  name: {{ .Chart.Name }}-{{ .Chart.AppVersion }}-tcp
-  annotations:
-    metallb.universe.tf/allow-shared-ip: {{ .Chart.Name }}-{{ .Chart.Version }}
+  name: {{ template "emulatorjs.fullname" . }}-tcp
   labels:
-    app: {{ .Chart.Name }}-{{ .Chart.Version }}
-
+    app: {{ template "emulatorjs.name" . }}
+    chart: {{ template "emulatorjs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
 spec:
-  selector:
-    app: {{ .Chart.Name }}-{{ .Chart.Version }}
-
   type: {{ .Values.service.type }}
-  externalTrafficPolicy: Local
-  loadBalancerIP: {{ .Values.service.ip }}
-
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
+  {{- if or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer") }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+  {{- end }}
   ports:
-    - name: managementUIPort
-      port: {{ .Values.env.managementUIPort }}
-      targetPort: managementUIPort-tcp
+    - name: managementUI
+      port: {{ .Values.service.managementUI.port }}
+      targetPort: managementUI-tcp
+      {{- if and (.Values.service.managementUI.nodePort) (eq .Values.service.type "NodePort") }}
+      nodePort: {{ .Values.service.managementUI.nodePort }}
+      {{- end }}
       protocol: TCP
-
-    - name: publicUIPort
-      port: {{ .Values.env.publicUIPort }}
-      targetPort: publicUIPort-tcp
+    - name: publicUI
+      port: {{ .Values.service.publicUI.port }}
+      targetPort: publicUI-tcp
+      {{- if and (.Values.service.publicUI.nodePort) (eq .Values.service.type "NodePort") }}
+      nodePort: {{ .Values.service.publicUI.nodePort }}
+      {{- end }}
       protocol: TCP
-
-    {{- if .Values.env.ipfsPeeringPort }}
-    - name: ipfsPeeringPort
-      port: {{ .Values.env.ipfsPeeringPort }}
-      targetPort: ipfsPeeringPort-tcp
+    {{- if .Values.service.ipfsPeering.port }}
+    - name: ipfsPeering
+      port: {{ .Values.service.ipfsPeering.port }}
+      targetPort: ipfsPeering-tcp
+      {{- if and (.Values.service.ipfsPeering.nodePort) (eq .Values.service.type "NodePort") }}
+      nodePort: {{ .Values.service.ipfsPeering.nodePort }}
+      {{- end }}
       protocol: TCP
     {{ end }}
+  selector:
+    app: {{ template "emulatorjs.name" . }}
+    release: {{ .Release.Name }}
