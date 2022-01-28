@@ -30,13 +30,13 @@ env:
 service:
   managementUI:
     port: 3000
-    nodePort: 
+    nodePort: 30000
   publicUI:
     port: 80
-    nodePort: 
+    nodePort: 30080
   ipfsPeering:
     port: 4001
-    nodePort: 
+    nodePort: 30001
 
   # -- `spec.type` for the Service
   type: NodePort
@@ -81,13 +81,13 @@ probes:
   # -- probes.liveness -- Configure the healthcheck for the ingress controller
   liveness:
     # -- Generate a liveness probe
-    enabled: true
+    enabled: false
     initialDelaySeconds: 60
     failureThreshold: 10
     timeoutSeconds: 5
   readiness:
     # -- Generate a readiness probe
-    enabled: true
+    enabled: false
     initialDelaySeconds: 60
     failureThreshold: 3
     timeoutSeconds: 5

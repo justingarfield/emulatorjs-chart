@@ -20,24 +20,24 @@ spec:
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
   {{- end }}
   ports:
-    - name: managementUI
+    - name: management
       port: {{ .Values.service.managementUI.port }}
-      targetPort: managementUI-tcp
+      targetPort: management-tcp
       {{- if and (.Values.service.managementUI.nodePort) (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.service.managementUI.nodePort }}
       {{- end }}
       protocol: TCP
-    - name: publicUI
+    - name: public
       port: {{ .Values.service.publicUI.port }}
-      targetPort: publicUI-tcp
+      targetPort: public-tcp
       {{- if and (.Values.service.publicUI.nodePort) (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.service.publicUI.nodePort }}
       {{- end }}
       protocol: TCP
     {{- if .Values.service.ipfsPeering.port }}
-    - name: ipfsPeering
+    - name: ipfs
       port: {{ .Values.service.ipfsPeering.port }}
-      targetPort: ipfsPeering-tcp
+      targetPort: ipfs-tcp
       {{- if and (.Values.service.ipfsPeering.nodePort) (eq .Values.service.type "NodePort") }}
       nodePort: {{ .Values.service.ipfsPeering.nodePort }}
       {{- end }}
