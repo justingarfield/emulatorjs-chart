@@ -81,17 +81,20 @@ probes:
   # -- probes.liveness -- Configure the healthcheck for the ingress controller
   liveness:
     # -- Generate a liveness probe
-    enabled: false
-    initialDelaySeconds: 60
-    failureThreshold: 10
-    timeoutSeconds: 5
+    enabled: true
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
   readiness:
     # -- Generate a readiness probe
-    enabled: false
-    initialDelaySeconds: 60
+    enabled: true
+    initialDelaySeconds: 0
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
     failureThreshold: 3
-    timeoutSeconds: 5
-
 
 antiaff:
   # -- set to true to enable antiaffinity (example: 2 emulatorjs in the same cluster)
