@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ template "emulatorjs.fullname" . }}
+  labels:
+    app: {{ template "emulatorjs.name" . }}
+    chart: {{ template "emulatorjs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: {{ .Values.strategyType }}
+    {{- if eq .Values.strategyType "RollingUpdate" }}
+    rollingUpdate:
+      maxSurge: {{ .Values.maxSurge }}
+      maxUnavailable: {{ .Values.maxUnavailable }}
+    {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "emulatorjs.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.podAnnotations }}
+          {{ toYaml . | indent 8 }}
+        {{- end }}
+      labels:
+        app: {{ template "emulatorjs.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.antiaff.enabled }}
+      affinity:
+        podAntiAffinity:
+        {{- if .Values.antiaff.strict }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+        {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+        {{- end }}
+                matchExpressions:
+                - key: release
+                  operator: In
+                  values:
+                  - {{ .Values.antiaff.avoidRelease }}
+              topologyKey: "kubernetes.io/hostname"
+      {{- end }}
+      {{- if .Values.podDnsConfig.enabled }}
+      dnsPolicy: {{ .Values.podDnsConfig.policy }}
+      dnsConfig:
+        nameservers:
+        {{- toYaml .Values.podDnsConfig.nameservers | nindent 8 }}
+      {{- end }}
+      hostname: {{ .Values.hostname }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PUID
+              value: {{ .Values.env.puid }}
+            - name: PGID
+              value: {{ .Values.env.pgid }}
+            - name: TZ
+              value: {{ .Values.env.tz }}
+            - name: SUBFOLDER
+              value: {{ .Values.env.subfolder }}
+          ports:
+            - containerPort: {{ .Values.env.managementUIPort }}
+              name: managementUIPort-tcp
+              protocol: TCP
+            - containerPort: {{ .Values.env.publicUIPort }}
+              name: publicUIPort-tcp
+              protocol: TCP
+            {{- if .Values.env.ipfsPeeringPort }}
+            - containerPort: {{ .Values.env.ipfsPeeringPort }}
+              name: ipfsPeeringPort-tcp
+              protocol: TCP
+            {{ end }}
+          {{- if .Values.probes.liveness.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+          {{- end }}
+          volumeMounts:
+          - mountPath: /config
+            name: config
+            {{- if .Values.persistentVolumeClaims.config.subPath }}
+            subPath: {{ .Values.persistentVolumeClaims.config.subPath }}
+            {{- end }}
+          - mountPath: /data
+            name: data
+            {{- if .Values.persistentVolumeClaims.data.subPath }}
+            subPath: {{ .Values.persistentVolumeClaims.data.subPath }}
+            {{- end }}
+      volumes:
+        - name: config
+        {{- if .Values.persistentVolumeClaims.config.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistentVolumeClaims.config.existingClaim }}{{ .Values.persistentVolumeClaims.config.existingClaim }}{{- else }}{{ template "emulatorjs.fullname" . }}{{- end }}
+        {{- else if .Values.customVolumes.enabled }}
+          {{- toYaml .Values.customVolumes.config | nindent 8 }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistentVolumeClaims.data.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistentVolumeClaims.data.existingClaim }}{{ .Values.persistentVolumeClaims.data.existingClaim }}{{- else }}{{ template "emulatorjs.fullname" . }}{{- end }}
+        {{- else if .Values.customVolumes.enabled }}
+          {{- toYaml .Values.customVolumes.config | nindent 8 }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}

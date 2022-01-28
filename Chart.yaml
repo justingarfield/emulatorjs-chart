@@ -1,0 +1,14 @@
+apiVersion: v2
+description: Deploys a pod hosting an emulatorjs instance.
+home: https://github.com/justingarfield/emulatorjs-chart
+name: emulatorjs
+appVersion: 2022.01.27
+version: 0.0.1
+sources:
+  - https://github.com/justingarfield/emulatorjs-chart
+  - https://hub.docker.com/r/linuxserver/emulatorjs
+  - https://github.com/linuxserver/emulatorjs
+icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/emulatorjs-logo.png
+maintainers:
+  - name: Justin Garfield
+    email: helm-charts@jgarfield.com
