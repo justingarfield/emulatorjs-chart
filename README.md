@@ -10,7 +10,9 @@ Deploys an emulatorjs pod into Kubernetes.
 * <https://hub.docker.com/r/linuxserver/emulatorjs>
 * <https://github.com/linuxserver/emulatorjs>
 
+## IPFS Warning
 
+emulatorjs uses something called the [InterPlanetary File System (IPFS)](https://ipfs.io/). Due to the way this distributed peer-to-peer file-system works, it may open connections to IP addresses that are considered hostile / infected / compromised. This in-turn will cause Malware applications (e.g. MalwareBytes) to throw MANY blocked connection warnings. This is normal behavior and it's up to you to decide whether to suppress these warnings, not run emulatorjs, and/or enforce more strict container / network settings. (I personally run my instance in its own little "isolated jail", so that if something malicious gets pulled down over the IPFS file-system, I could care less, as I'll just blow away the release and redeploy it)
 
 ## Installation
 

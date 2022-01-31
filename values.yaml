@@ -128,7 +128,7 @@ persistentVolumeClaims:
     # -- specify an existing `PersistentVolumeClaim` to use
     # existingClaim: ""
 
-    # -- Annotations for the `PersitentVolumeClaim`
+    # -- Annotations for the `PersistentVolumeClaim`
     annotations: {}
 
     accessModes:
