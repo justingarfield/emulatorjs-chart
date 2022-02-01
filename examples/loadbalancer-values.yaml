@@ -1,0 +1,8 @@
+# example values for running locally via Load Balancer and Ingress in Docker Desktop K8s install
+
+service:
+  type: "LoadBalancer"
+  loadBalancerIP: 127.0.0.240
+
+ingress:
+  enabled: true

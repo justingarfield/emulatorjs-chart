@@ -1,0 +1,9 @@
+# example values for running locally via NodePort in Docker Desktop K8s install
+
+service:
+  managementUI:
+    nodePort: 30000
+  publicUI:
+    nodePort: 30080
+  ipfsPeering:
+    nodePort: 30001

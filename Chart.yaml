@@ -1,5 +1,5 @@
 apiVersion: v2
-description: Deploys an emulatorjs pod into Kubernetes.
+description: Deploys emulatorjs related resources into Kubernetes.
 home: https://github.com/justingarfield/emulatorjs-chart
 name: emulatorjs
 appVersion: 2022.01.27

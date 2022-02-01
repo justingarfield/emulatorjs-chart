@@ -65,22 +65,22 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: PUID
-              value: {{ .Values.env.puid | quote }}
+              value: {{ .Values.puid | quote }}
             - name: PGID
-              value: {{ .Values.env.pgid | quote}}
+              value: {{ .Values.pgid | quote}}
             - name: TZ
-              value: {{ .Values.env.tz | quote }}
+              value: {{ .Values.tz | quote }}
             - name: SUBFOLDER
-              value: {{ .Values.env.subfolder | quote }}
+              value: {{ .Values.subfolder | quote }}
           ports:
-            - containerPort: {{ .Values.env.managementUIPort }}
+            - containerPort: {{ .Values.service.managementUI.port }}
               name: management-tcp
               protocol: TCP
-            - containerPort: {{ .Values.env.publicUIPort }}
+            - containerPort: {{ .Values.service.publicUI.port }}
               name: public-tcp
               protocol: TCP
-            {{- if .Values.env.ipfsPeeringPort }}
-            - containerPort: {{ .Values.env.ipfsPeeringPort }}
+            {{- if .Values.service.ipfsPeeringPort }}
+            - containerPort: {{ .Values.service.ipfsPeering.port }}
               name: ipfs-tcp
               protocol: TCP
             {{ end }}

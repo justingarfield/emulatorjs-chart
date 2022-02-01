@@ -18,25 +18,28 @@ image:
   # -- the pull policy
   pullPolicy: IfNotPresent
 
-env:
-  managementUIPort: 3000
-  publicUIPort: 80
-  ipfsPeeringPort: 4001
-  puid: 1000
-  pgid: 1000
-  tz: "Europe/London"
-  subfolder: "/"
+# -- Specify a timezone to use to have correct log times
+tz: "Europe/London"
+
+# -- User ID to run as non root and for ownership of files written
+puid: 1000
+
+# -- Group ID to run as non root and for ownership of files written
+pgid: 1000
+
+# -- reverse proxy path
+subfolder: "/"
 
 service:
   managementUI:
     port: 3000
-    nodePort: 30000
+    nodePort: 
   publicUI:
     port: 80
-    nodePort: 30080
+    nodePort: 
   ipfsPeering:
     port: 4001
-    nodePort: 30001
+    nodePort: 
 
   # -- `spec.type` for the Service
   type: NodePort
