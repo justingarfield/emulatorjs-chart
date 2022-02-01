@@ -120,7 +120,19 @@ customVolumes:
   # -- any volume type can be used here
   config: {}
     # hostPath:
-    #   path: "/mnt/data"
+    #   path: "/mnt/emulatorjs/config"
+  data: {}
+    # hostPath:
+    #   path: "/mnt/emulatorjs/data"
+
+persistentVolumes:
+  enabled: false
+  config:
+    path: /some/hostPath/config
+    size: 50Mi
+  data:
+    path: /some/hostPath/data
+    size: 10Gi
 
 # -- `spec.PersitentVolumeClaim` configuration
 persistentVolumeClaims:
@@ -137,7 +149,7 @@ persistentVolumeClaims:
     accessModes:
       - ReadWriteOnce
 
-    size: "500Mi"
+    size: "50Mi"
 
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -165,7 +177,7 @@ persistentVolumeClaims:
     accessModes:
       - ReadWriteOnce
 
-    size: "500Mi"
+    size: "10Gi"
 
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning

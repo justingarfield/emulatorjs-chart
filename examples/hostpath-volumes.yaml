@@ -1,0 +1,12 @@
+# note: HostPath isn't fully supported on Windows 10 WSL2, and may cause some really messed up experiences (e.g. sometimes this works on my
+# Win 10 desktop, sometimes it doesn't). If you have issues with this on Windows 10, try using local-storage instead)
+customVolumes:
+  enabled: true
+  config:
+    hostPath:
+      path: "/run/desktop/mnt/host/d/emulatorjs/config"
+      type: DirectoryOrCreate
+  data:
+    hostPath:
+      path: "/run/desktop/mnt/host/d/emulatorjs/data"
+      type: DirectoryOrCreate

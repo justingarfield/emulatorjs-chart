@@ -118,19 +118,19 @@ spec:
       volumes:
         - name: config
         {{- if .Values.persistentVolumeClaims.config.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ if .Values.persistentVolumeClaims.config.existingClaim }}{{ .Values.persistentVolumeClaims.config.existingClaim }}{{- else }}{{ template "emulatorjs.fullname" . }}{{- end }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolumeClaims.config.existingClaim }}{{ .Values.persistentVolumeClaims.config.existingClaim }}{{- else }}{{ template "emulatorjs.fullname" . }}-cfg{{- end }}
         {{- else if .Values.customVolumes.enabled }}
-          {{- toYaml .Values.customVolumes.config | nindent 8 }}
+          {{- toYaml .Values.customVolumes.config | nindent 10 }}
         {{- else }}
           emptyDir: {}
         {{- end }}
         - name: data
         {{- if .Values.persistentVolumeClaims.data.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ if .Values.persistentVolumeClaims.data.existingClaim }}{{ .Values.persistentVolumeClaims.data.existingClaim }}{{- else }}{{ template "emulatorjs.fullname" . }}{{- end }}
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistentVolumeClaims.data.existingClaim }}{{ .Values.persistentVolumeClaims.data.existingClaim }}{{- else }}{{ template "emulatorjs.fullname" . }}-data{{- end }}
         {{- else if .Values.customVolumes.enabled }}
-          {{- toYaml .Values.customVolumes.config | nindent 8 }}
+          {{- toYaml .Values.customVolumes.data | nindent 10 }}
         {{- else }}
           emptyDir: {}
         {{- end }}

@@ -1,0 +1,36 @@
+{{- if .Values.persistentVolumeClaims.data.enabled -}}
+{{- if not .Values.persistentVolumeClaims.data.existingClaim -}}
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+{{- if .Values.persistentVolumeClaims.data.annotations }}
+  annotations:
+{{ toYaml .Values.persistentVolumeClaims.data.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "emulatorjs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "emulatorjs.fullname" . }}-data
+spec:
+  accessModes:
+{{ toYaml .Values.persistentVolumeClaims.data.accessModes | indent 4 }}
+{{- if .Values.persistentVolumeClaims.data.storageClass }}
+{{- if (eq "-" .Values.persistentVolumeClaims.data.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistentVolumeClaims.data.storageClass }}"
+{{- end }}
+{{- end }}
+  resources:
+    requests:
+      storage: "{{ .Values.persistentVolumeClaims.data.size }}"
+{{- if .Values.persistentVolumes.enabled }}
+  selector:
+    matchLabels:
+      app: {{ template "emulatorjs.name" . }}
+      volType: "data"
+{{- end }}
+{{- end -}}
+{{- end -}}

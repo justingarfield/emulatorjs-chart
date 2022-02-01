@@ -1,0 +1,30 @@
+{{- if .Values.persistentVolumes.enabled -}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: {{ template "emulatorjs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    volType: "config"
+  name: {{ template "emulatorjs.fullname" . }}-config-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistentVolumes.config.size }}
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: {{ .Values.persistentVolumes.config.path }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - docker-desktop
+{{- end -}}

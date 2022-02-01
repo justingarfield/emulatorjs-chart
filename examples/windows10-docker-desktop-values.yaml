@@ -1,0 +1,23 @@
+# example values for running locally in a Windows 10 Docker Desktop K8s install, using simple local-storage volumes for data
+
+service:
+  type: "LoadBalancer"
+  loadBalancerIP: 127.0.0.240
+
+ingress:
+  enabled: true
+
+persistentVolumes:
+  enabled: true
+  config:
+    path: "/run/desktop/mnt/host/d/emulatorjs/config"
+  data:
+    path: "/run/desktop/mnt/host/d/emulatorjs/data"
+
+persistentVolumeClaims:
+  config:
+    enabled: true
+    storageClass: "local-storage"
+  data:
+    enabled: true
+    storageClass: "local-storage"
